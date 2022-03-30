@@ -9,12 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Get Commit Hash
-      id: hash
-      run: echo "git_hash=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_HASH
     - name: Docker Login
       run: docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}}$DOCKER_PASSWORD
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/golang-dev:${{ env.hash }}
+      run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/golang-dev:${GITHUB_SHA::6}
     - name: Docker Push
-      run: docker push ${{secrets.DOCKER_USER}}/golang-dev:${{ env.hash }}
+      run: docker push ${{secrets.DOCKER_USER}}/golang-dev:${GITHUB_SHA::6}
