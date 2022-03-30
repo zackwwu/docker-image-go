@@ -9,14 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Generate Tag
-      env:
-        IMAGE_TAG: $(date +%s)
-    - name: Docker Login
-      run: docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}}$DOCKER_PASSWORD
     - name: Get Commit Hash
       id: hash
       run: echo "git_hash=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_HASH
+    - name: Docker Login
+      run: docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}}$DOCKER_PASSWORD
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/golang-dev:${{ env.hash }}
     - name: Docker Push
